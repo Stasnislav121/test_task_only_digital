@@ -8,6 +8,7 @@ class MainPage(BasePage):
         super().__init__(page=page, end_url=self.url)
 
     def check_footer(self):
-        from library.Blocks.BaseFooter import FullDataFooter
-        footer = FullDataFooter(page=self.page).check_element()
+        from library.Blocks.FullDataFooter import FullDataFooter
+        footer = FullDataFooter(page=self.page)
+        footer.check_element()
         return footer

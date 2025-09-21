@@ -6,10 +6,10 @@ class BaseUi:
     def __init__(self, page: Page):
         self.page = page
 
-    def get_element_by_locator(self, locator: str, has_text=None, has_not_text=None, has=None,
+    def get_element_by_locator(self, selector=None, has_text=None, has_not_text=None, has=None,
                                has_not=None) -> Locator:
         all_params = {
-            'selector': locator,
+            'selector': selector,
             'has_text': has_text,
             'has_not_text': has_not_text,
             'has': has,
@@ -17,6 +17,7 @@ class BaseUi:
         }
         d = {k: v for k, v in all_params.items() if v is not None}
         el = self.page.locator(**d)
+        el.scroll_into_view_if_needed()
         return el
 
     def expect_to_be_visible(self, locator: str, has_text=None, has_not_text=None, has=None, has_not=None,
@@ -31,10 +32,11 @@ class BaseUi:
 
         step_msg = f'Ожидание, что элемент css = {locator} будет отображаться на странице' if el_name is None \
             else f'Ожидание, что [{el_name}], css = {locator} будет отображаться на странице'
-        with allure.step(step_msg):
+        with (allure.step(step_msg)):
             err_msg = f'Невозможно дождаться отображения элемента css = {locator}:' if el_name is None \
                 else f'Невозможно дождаться отображения [{el_name}], css = {locator}:'
-            expect(self.get_element_by_locator(**all_params), err_msg).to_be_visible(timeout=timeout)
+            expect(self.get_element_by_locator(**all_params), err_msg
+                   ).to_be_visible(timeout=timeout)
             return self
 
     def check_element_is_visible(self, locator: str, has_text=None, has_not_text=None, has=None, has_not=None) -> bool:
@@ -53,21 +55,21 @@ class BaseUi:
         locator.click()
         return self
 
-    def click_element_by_locator(self, locator: str):
-        el = self.get_element_by_locator(locator=locator)
-        with allure.step(f'Кликнуть по элементу "{locator}"'):
+    def click_element_by_locator(self, selector: str):
+        el = self.get_element_by_locator(selector=selector)
+        with allure.step(f'Кликнуть по элементу "{selector}"'):
             self.click_element(locator=el)
             return self
 
-    def get_text(self, locator: str, has_text=None, has_not_text=None, has=None, has_not=None) -> str:
+    def get_text(self, selector: str, has_text=None, has_not_text=None, has=None, has_not=None) -> str:
         all_params = {
-            'selector': locator,
+            'selector': selector,
             'has_text': has_text,
             'has_not_text': has_not_text,
             'has': has,
             'has_not': has_not
         }
-        with allure.step(f'Получить текст у элемента "{locator}"'):
+        with allure.step(f'Получить текст у элемента "{selector}"'):
             return self.get_element_by_locator(**all_params).inner_text()
 
     def expect_to_have_text(self, locator: str, text: str, has_text=None, has_not_text=None, has=None, has_not=None,
@@ -80,4 +82,11 @@ class BaseUi:
             'has_not': has_not
         }
         with allure.step(f'Ожидание, что элемент "{locator}" имеет текст "{text}"'):
-            return expect(self.get_text(**all_params)).to_have_text(text, timeout=timeout)
+            return expect(self.get_element_by_locator(**all_params)).to_have_text(text, timeout=timeout)
+
+    def screenshot(self, name, locator=None):
+        if locator:
+            el = self.get_element_by_locator(selector=locator)
+            el.screenshot(path=f"test_task_only_digital/screenshots/{name}.jpg", type='jpeg')
+        else:
+            self.page.screenshot(path=f"test_task_only_digital/screenshots/{name}.jpg", type='jpeg')
