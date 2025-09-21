@@ -16,14 +16,26 @@ class FullDataFooter(BaseFooter):
     description_documents_css = f'{documents_block_css} p[class*="Documents_documentsDescription"]'
     logo_css = f'svg[class*="Footer_logo"]'
 
+    def check_start_project_button(self):
+        with allure.step('Проверить наличие кнопки "Начать проект"'):
+            self.expect_to_be_visible(locator=self.button_css, el_name='Кнопка "Начать проект"')
+        return self
+
+    def check_text_about(self, expected_text=None):
+        with allure.step('Проверить блок с текстом о компании'):
+            expected_text = expected_text or 'Создаем digital-продукт на базе стратегии, креатива и технологий'
+            self.expect_to_be_visible(locator=self.about_text_css, el_name='about_text')
+            self.expect_to_have_text(locator=self.about_text_css, text=expected_text)
+        return self
+
     def check_contacts_block(self):
-        with allure.step("Проверить наличие блока контактов"):
-            self.expect_to_be_visible(locator=self.contacts_block_css, el_name="Блок контактов")
+        with allure.step('Проверить наличие блока контактов'):
+            self.expect_to_be_visible(locator=self.contacts_block_css, el_name='Блок контактов')
         return self
 
     def check_email_link(self, expected_email=None):
         with allure.step('Проверить ссылку email'):
-            self.expect_to_be_visible(locator=self.email_css, el_name="Email")
+            self.expect_to_be_visible(locator=self.email_css, el_name='Email')
             self.expect_to_have_text(locator=self.email_css, text=expected_email)
         return self
 
@@ -34,8 +46,8 @@ class FullDataFooter(BaseFooter):
         return self
 
     def check_telegram_block(self, expected_telegram):
-        with allure.step("Проверить наличие блока Telegram"):
-            self.expect_to_be_visible(locator=self.telegram_block_css,el_name="Блок Telegram")
+        with allure.step('Проверить наличие блока Telegram'):
+            self.expect_to_be_visible(locator=self.telegram_block_css,el_name='Блок Telegram')
 
             with allure.step('Проверить контакт Telegram'):
                 self.expect_to_be_visible(locator=self.telegram_css, el_name='Контакт телеграма')
@@ -43,17 +55,17 @@ class FullDataFooter(BaseFooter):
         return self
 
     def check_documents_block(self):
-        with allure.step("Проверить наличие блока документов"):
+        with allure.step('Проверить наличие блока документов'):
             self.expect_to_be_visible(locator=self.documents_block_css, el_name='Блок документов')
 
             with allure.step('Проверить наличие документа PDF'):
-                self.expect_to_be_visible(locator=self.pdf_document_css, el_name="PDF документ")
+                self.expect_to_be_visible(locator=self.pdf_document_css, el_name='PDF документ')
 
             with allure.step('Проверить наличие документа Pitch'):
-                self.expect_to_be_visible(locator=self.pitch_document_css,el_name="Pitch документ")
+                self.expect_to_be_visible(locator=self.pitch_document_css,el_name='Pitch документ')
         return self
 
     def check_logo(self):
-        with allure.step("Проверить наличие логотипа в футере"):
-            self.expect_to_be_visible(locator=self.logo_css, el_name="Логотип футера")
+        with allure.step('Проверить наличие логотипа в футере'):
+            self.expect_to_be_visible(locator=self.logo_css, el_name='Логотип футера')
         return self

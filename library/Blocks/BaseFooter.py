@@ -9,7 +9,7 @@ class BaseFooter(BasePage):
     footer_block_css = 'footer[class*="Footer"]'
     social_block_css = f'{footer_block_css} div[class*="Socials"]'
     year_block_css = 'p[class*="h4"]'
-    text_block_css = 'div[class*="FooterText"]'
+    copyright_css = 'div[class*="FooterText"]'
     privacy_link_css = 'a[class*="text2"]'
 
     def check_element(self):
@@ -26,6 +26,12 @@ class BaseFooter(BasePage):
     def check_year_text(self, expected_text: str):
         with allure.step('Проверить текст c годами в футере'):
             self.expect_to_have_text(locator=self.year_block_css, text=expected_text)
+        return self
+
+    def check_copyright(self, expected_text: str):
+        with allure.step('Проверить наличие текста "creative digital production"'):
+            self.expect_to_be_visible(locator=self.copyright_css, el_name='Копирайт в футере')
+            self.expect_to_have_text(locator=self.copyright_css, text=expected_text)
         return self
 
     def check_privacy_link(self):

@@ -32,11 +32,10 @@ class BaseUi:
 
         step_msg = f'Ожидание, что элемент css = {locator} будет отображаться на странице' if el_name is None \
             else f'Ожидание, что [{el_name}], css = {locator} будет отображаться на странице'
-        with (allure.step(step_msg)):
+        with allure.step(step_msg):
             err_msg = f'Невозможно дождаться отображения элемента css = {locator}:' if el_name is None \
                 else f'Невозможно дождаться отображения [{el_name}], css = {locator}:'
-            expect(self.get_element_by_locator(**all_params), err_msg
-                   ).to_be_visible(timeout=timeout)
+            expect(self.get_element_by_locator(**all_params), err_msg).to_be_visible(timeout=timeout)
             return self
 
     def check_element_is_visible(self, locator: str, has_text=None, has_not_text=None, has=None, has_not=None) -> bool:
@@ -48,7 +47,7 @@ class BaseUi:
             'has_not': has_not
         }
 
-        with allure.step(f"Проверить, что элемент {locator} виден на странице"):
+        with allure.step(f'Проверить, что элемент {locator} виден на странице'):
             return self.get_element_by_locator(**all_params).is_visible()
 
     def click_element(self, locator: Locator):
@@ -84,9 +83,11 @@ class BaseUi:
         with allure.step(f'Ожидание, что элемент "{locator}" имеет текст "{text}"'):
             return expect(self.get_element_by_locator(**all_params)).to_have_text(text, timeout=timeout)
 
-    def screenshot(self, name, locator=None):
+    def screenshot(self, name, locator=None, timeout=None):
+        path = f'screenshots/{name}.jpg'
         if locator:
             el = self.get_element_by_locator(selector=locator)
-            el.screenshot(path=f"test_task_only_digital/screenshots/{name}.jpg", type='jpeg')
+            el.screenshot(path=path, type='jpeg')
         else:
-            self.page.screenshot(path=f"test_task_only_digital/screenshots/{name}.jpg", type='jpeg')
+            self.page.screenshot(path=path, type='jpeg', timeout=timeout)
+        allure.attach.file(path, name=name, attachment_type=allure.attachment_type.JPG)
