@@ -3,6 +3,9 @@ from library.BasePage import BasePage
 
 
 class BaseFooter(BasePage):
+    def __init__(self, page):
+        super().__init__(page=page)
+
     footer_block_css = 'footer[class*="Footer"]'
     social_block_css = f'{footer_block_css} div[class*="Socials"]'
     year_block_css = 'p[class*="h4"]'
